@@ -51,6 +51,7 @@
 					<cloudhub2Deployment>
 						<uri>https://anypoint.mulesoft.com/</uri>
 						<provider>MC</provider>
+						<businessGroupId>ae29f68b-abeb-4b90-8fab-dcbcad79431c</businessGroupId>
 						<environment>dev</environment>
 						<target>Cloudhub-US-East-1</target>
 						<muleVersion>${app.runtime}</muleVersion>
