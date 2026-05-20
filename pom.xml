@@ -57,6 +57,7 @@
 						<muleVersion>${app.runtime}</muleVersion>
 							<clientId>${client.id}</clientId>
 							<clientSecret>${client.secret}</clientSecret>
+						<connectedAppGrantType>client_credentials</connectedAppGrantType>
 						<applicationName>uhub-covid-sapi-dev</applicationName>
 						<vCores>0.1</vCores>
 						<properties>
