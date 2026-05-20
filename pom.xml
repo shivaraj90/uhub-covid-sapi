@@ -88,14 +88,14 @@
 			<artifactId>ojdbc11</artifactId>
 			<version>0.1</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/Project Libraries/ojdbc11-0.1.jar</systemPath>
+			<systemPath>${project.basedir}/Project Libraries/ojdbc11.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>com.mycompany</groupId>
 			<artifactId>ojdbc17</artifactId>
 			<version>0.1</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/Project Libraries/ojdbc17-0.1.jar</systemPath>
+			<systemPath>${project.basedir}/Project Libraries/ojdbc17.jar</systemPath>
 		</dependency>
 	</dependencies>
 
