@@ -60,8 +60,6 @@
 							<clientSecret>${client.secret}</clientSecret>
 							<grantType>client_credentials</grantType>
 						</connectedApp>
-						<username>${username}</username>
-						<password>${password}</password>
 						<applicationName>uhub-covid-sapi-dev</applicationName>
 						<vCores>0.1</vCores>
 						<properties>
