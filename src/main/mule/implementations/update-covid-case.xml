@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<flow name="put:\cases:application\json:uhub-covid-sapi-config">
+        <set-variable value="#[attributes.headers.'x-correlation-id' default '']" doc:name="Set correlation id" doc:id="7cd29b53-3b10-4f67-a446-c458d74d8c28" variableName="correlationId"/>
+		<logger level="INFO" doc:name="Logger before update" doc:id="bc2892a6-2724-4d83-925a-1abdd0a8b77c" message='transactionId: #[vars.transactionId], correlationId: #[vars.correlationId], message: "before updating", payload: #[payload]'/>
+		<ee:transform doc:name="Transform Message" doc:id="b9fb0f7d-9d21-4a21-a6df-6a8a4c914ed4" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+var actionDate = now() as Date{
+	format: "yyyy-MM-dd"
+}
+var owner = "uhic"
+---
+{
+	case_id: payload.caseID,
+	source: payload.source,
+	case_type: payload.caseType,
+	first_name: payload.firstName,
+	last_name: payload.lastName,
+	phone: payload.phone,
+	email: payload.email,
+	date_of_birth: payload.dateOfBirth as Date {format: "yyyy-MM-dd"},
+	national_id: payload.nationalID,
+	national_id_type: payload.nationalIDType,
+	street_address: payload.address.streetAddress,
+	city: payload.address.city,
+	state: payload.address.state,
+	postal: payload.address.postal,
+	country: payload.address.country,
+	update_date: actionDate,
+	update_by: owner
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference" doc:id="072b0366-ce49-41d3-b2ca-97212f7f2592" name="uhub-update-covid-case_subFlow"/>
+		<ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  caseID: payload[0].CASE_ID as String
+} ]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<logger level="INFO" doc:name="Logger after updating" doc:id="e9166019-d00a-42d7-8121-0497ff0655c7" message='transactionId: #[vars.transactionId], correlationId: #[vars.correlationId], message: "after updating", payload: #[payload]'/>
+    
+</flow>
+    </mule>
