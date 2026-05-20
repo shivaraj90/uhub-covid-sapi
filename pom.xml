@@ -8,7 +8,14 @@
 	<packaging>mule-application</packaging>
 
 	<name>uhub-covid-sapi</name>
-
+<profiles>
+		<profile>
+			<id>dev</id>
+			<properties>
+				<env>dev</env>
+			</properties>
+		</profile>
+	</profiles>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -80,11 +87,15 @@
 			<groupId>com.mycompany</groupId>
 			<artifactId>ojdbc11</artifactId>
 			<version>0.1</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/Project Libraries/ojdbc11-0.1.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>com.mycompany</groupId>
 			<artifactId>ojdbc17</artifactId>
 			<version>0.1</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/Project Libraries/ojdbc17-0.1.jar</systemPath>
 		</dependency>
 	</dependencies>
 
@@ -102,7 +113,6 @@
 			<layout>default</layout>
 		</repository>
 	</repositories>
-
 	<pluginRepositories>
 		<pluginRepository>
 			<id>mulesoft-releases</id>
