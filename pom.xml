@@ -49,7 +49,7 @@
 				</executions>
 				<configuration>
 					<cloudhub2Deployment>
-						<uri>https://mulesoft.com</uri>
+						<uri>https://anypoint.mulesoft.com/</uri>
 						<provider>MC</provider>
 						<environment>develop</environment>
 						<target>Cloudhub-US-East-1</target>
