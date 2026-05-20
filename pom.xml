@@ -58,6 +58,7 @@
 						<username>${username}</username>
 						<password>${password}</password>
 						<applicationName>uhub-covid-sapi-dev</applicationName>
+						<objectStoreV2>true</objectStoreV2>
 						<vCores>0.1</vCores>
 						<properties>
 							<env>${env}</env>
