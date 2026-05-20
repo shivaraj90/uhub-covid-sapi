@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<flow name="get:\(nationalID):uhub-covid-sapi-config">
+        <set-variable value="#[attributes.headers.'x-correlation-id' default '']" doc:name="Set Correlation Id" doc:id="c265bfac-3634-4f99-b180-2c08456aa5f1" variableName="correlationId"/>
+		<logger level="INFO" doc:name="start Logger" doc:id="521d768e-263f-4f62-a137-1b17bd5d78c2" message='transactionId: #[vars.transactionId], correlationId: #[vars.correlationId], message: "started logger for fetching case", payload: #[payload]'/>
+		<ee:transform doc:name="Transform Message">
+            <ee:variables>
+                <ee:set-variable variableName="nationalID"><![CDATA[attributes.uriParams.'nationalID']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+		<flow-ref doc:name="Flow Reference" doc:id="b92dc79e-e7f8-4f44-b8d0-4003814f925d" name="get-covid-case-by-nationalID" />
+		<choice doc:name="Choice" doc:id="fed9f3a7-7cf9-4d5e-bb5a-e1ba17daf555" >
+			<when expression="#[sizeOf(payload)&gt;0]">
+				<ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload as Array map(covidCase, indexOfCovidCase)->{
+	caseId: covidCase.case_id,
+	source: covidCase.source,
+	case_type: covidCase.case_type,
+	first_name: covidCase.first_name,
+	last_name: covidCase.last_name,
+	phone: covidCase.phone,
+	email: covidCase.email,
+	date_of_birth: covidCase.date_of_birth as String {format: "yyyy-MM-dd"},
+	national_id: covidCase.national_id,
+	national_id_type: covidCase.national_id_type,
+	address:{
+		street_address: covidCase.street_address,
+		city: covidCase.city,
+		state: covidCase.state,
+		postal: covidCase.postal,
+		country: covidCase.country,
+	},
+	update_date: covidCase.update_date as String {format: "yyyy-MM-dd" },
+	create_date: covidCase.create_date as String {format: "yyyy-MM-dd"},
+	create_by: covidCase.create_by,
+	update_by: covidCase.update_by
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Transform Message" doc:id="3d063029-ba48-4554-b81c-af61b003bee3" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+                      "code":404,
+                      "message":"resource not found",
+                      "description":"no mathing records with give id "++ vars.nationalID as String,
+                      "dateTime":now() as String {format: "yyyy-MM-dd'T'HH:mm:ss'z'"},
+                      "transactionId":vars.transactionId
+                    }]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="Logger ended" doc:id="ba7bf049-de31-4094-bb1d-04544e728199" message='transactionId: #[vars.transactionId], correlationId: #[vars.correlationId], message: "ended logger for fetching case", payload: #[payload]'/>
+    
+</flow>
+    </mule>

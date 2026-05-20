@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<sub-flow name="get-all-cases" doc:id="867eb3d9-83a1-42c9-bb03-c998b3b65588" >
+		<logger level="INFO" doc:name="Logger" doc:id="8c4025a9-84b2-4d3a-9e65-7faef8e91270" />
+		<db:select doc:name="fetch all records by state" doc:id="6de54cf3-a7ad-4091-8df3-eb6c11264e93" config-ref="Database_Config">
+			<db:sql ><![CDATA[#[vars.prepareDynamicQueryForState]]]></db:sql>
+		</db:select>
+		<logger level="INFO" doc:name="end Logger" doc:id="19dbcfb1-37db-477b-a7e1-226fa4b68034" />
+	</sub-flow>
+	<sub-flow name="get-covid-case-by-nationalID" doc:id="6b75f2f8-1e3e-4795-b217-70ca1688832e" >
+		<logger level="INFO" doc:name="before fetching case Logger" doc:id="338403aa-0f89-4cf5-a6af-afa27b2d1a58" message='transactionId: #[vars.transactionId], correlationId: #[vars.correlationId], message: "before logger for fetching case", payload: #[payload]'/>
+		<db:select doc:name="Select" doc:id="9a133073-c36a-4a33-8870-78c05cf05235" config-ref="Database_Config">
+			<db:sql><![CDATA[select * from cvd_case_master where national_id=:nationalID]]></db:sql>
+			<db:input-parameters><![CDATA[#[nationalID: vars.nationalID]]]></db:input-parameters>
+		</db:select>
+		<logger level="INFO" doc:name="Logger" doc:id="430ce0e6-67d2-49e4-a315-4017e05a803d" message='transactionId: #[vars.transactionId], correlationId: #[vars.correlationId], message: "end logger for fetching case"'/>
+	</sub-flow>
+	<sub-flow name="uhub-register-covid-case-Sub_Flow" doc:id="fed82dd2-aa69-43a9-8633-f12df75f2581" >
+		<logger level="INFO" doc:name="start Logger" doc:id="ac14da3f-d40e-4365-a829-89c547dacad5" message='transactionId: #[vars.transactionId], correlationId: #[vars.correlationId], payload: #[payload], message: "before insert covid case"'/>
+		<db:insert doc:name="Insert" doc:id="b7485354-7026-474b-99f6-82de2bfcb340" config-ref="Database_Config" autoGenerateKeys="true">
+			<db:sql ><![CDATA[insert into cvd_case_master (source, case_type, first_name, last_name, phone, email, date_of_birth, national_id, national_id_type, street_address, city, state, postal, country, create_date, update_date, create_by, update_by) values(:source, :case_type, :first_name, :last_name, :phone, :email,:date_of_birth, :national_id, :national_id_type, :street_address, :city, :state, :postal, :country, :create_date,:update_date,:create_by, :update_by) 
+]]></db:sql>
+			<db:input-parameters ><![CDATA[#[payload]]]></db:input-parameters>
+			<db:auto-generated-keys-column-names >
+				<db:auto-generated-keys-column-name value="CASE_ID" />
+			</db:auto-generated-keys-column-names>
+		</db:insert>
+		<logger level="INFO" doc:name="Logger" doc:id="41121f50-e3ab-4763-bd59-376fb2222da3" message='transactionId: #[vars.transactionId], correlationId: #[vars.correlationId], message: "after insert covid case"'/>
+	</sub-flow>
+	<sub-flow name="uhub-update-covid-case_subFlow" doc:id="cfb21e10-c6f3-44d1-927d-b182236f5262" >
+		<logger level="INFO" doc:name="Logger before updating covid-case" doc:id="0c95135e-d60e-4c7c-a3e9-3a4c7e5d6407" message='transactionId: #[vars.transactionId], correlationId: #[vars.correlationId], message: "before updating covid case", payload: #[payload]'/>
+		<db:update doc:name="Update Covid Case" doc:id="96697735-a72d-43fd-bb38-1c417ef3314d" config-ref="Database_Config" autoGenerateKeys="true">
+			<db:sql ><![CDATA[update cvd_case_master set source=:source, case_type=:case_type, first_name=:first_name, last_name=:last_name, phone=:phone, email=:email, date_of_birth=:date_of_birth, national_id=:national_id, national_id_type=:national_id_type, street_address=:street_address, city=:city, state=:state, postal=:postal, country=:country, update_date=:update_date, update_by=:update_by where case_id=:case_id ]]></db:sql>
+			<db:input-parameters ><![CDATA[#[payload]]]></db:input-parameters>
+			<db:auto-generated-keys-column-names >
+				<db:auto-generated-keys-column-name value="CASE_ID" />
+			</db:auto-generated-keys-column-names>
+		</db:update>
+		<logger level="INFO" doc:name="Logger after update covid case" doc:id="df6ff8b1-07b9-43af-b2c7-ce76de8f42f7" message='transactionId: #[vars.transactionId], correlationId: #[vars.correlationId], message: "after updating covid case", payload: #[payload]'/>
+	</sub-flow>
+</mule>

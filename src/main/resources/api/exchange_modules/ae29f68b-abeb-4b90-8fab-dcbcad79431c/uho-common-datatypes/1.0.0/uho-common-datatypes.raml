@@ -1,0 +1,23 @@
+#%RAML 1.0 Library
+usage: can be used across uho api
+types:
+  error-response-types:
+    type: object
+    properties:
+      code:
+        type: integer
+        required: true 
+      message:
+        example: Bad Request
+        type: string
+        required: true
+      description:
+        type: string
+        required: false
+      dateTime:
+        type: datetime
+        required: true
+      transactionId:
+        type: string
+        required: true
+

@@ -1,0 +1,128 @@
+#%RAML 1.0
+title: uhub-covid-sapi
+baseUri: https://{environment}/covid/{ver}
+baseUriParameters:
+  environment:
+    description: DEV, TEST, PROD, UAT
+    enum: ["uho-dev-uhub-sapi.us-e2.cloudhub.io", "uho-test-uhub-sapi.us-e2.cloudhub.io", "uho-prod-uhub-sapi.us-e2.cloudhub.io", "uho-uat-uhub-sapi.us-e2.cloudhub.io"]
+securitySchemes:
+  oauth20: !include /exchange_modules/ae29f68b-abeb-4b90-8fab-dcbcad79431c/oauth-20/1.0.2/oauth-20.raml
+uses:
+  uhub-covid-datatypes: datatypes/common-datatypes.raml
+  uhub-common-error-datatype: /exchange_modules/ae29f68b-abeb-4b90-8fab-dcbcad79431c/uho-common-datatypes/1.0.0/uho-common-datatypes.raml
+traits:
+  correlation-id: !include /exchange_modules/ae29f68b-abeb-4b90-8fab-dcbcad79431c/x-corellation-id/1.0.1/x-corellation-id.raml
+  transaction-id: !include /exchange_modules/ae29f68b-abeb-4b90-8fab-dcbcad79431c/x-transaction-id/1.0.1/x-transaction-id.raml
+  client-id: !include /exchange_modules/ae29f68b-abeb-4b90-8fab-dcbcad79431c/client-id/1.0.1/client-id.raml
+  state-query-param: !include datatypes/state-query-param.raml
+/cases:
+  post:
+    is: [transaction-id, correlation-id, client-id]
+    description: used to get all covid cases
+    securedBy: [oauth20]
+    body:
+      application/json:
+        type: uhub-covid-datatypes.register-covid-case-request-type
+        example: !include examples/register-covid-case-example.json
+    responses:
+      201:
+        body:
+          application/json:
+            type: uhub-covid-datatypes.register-covid-case-response-type
+            example: !include examples/201-example.json
+      503:
+        body:
+          application/json:
+            type: uhub-common-error-datatype.error-response-types
+            example: !include examples/503.json
+      400:
+        body:
+          application/json:
+            type: uhub-common-error-datatype.error-response-types
+            example: !include examples/400.json
+      500:
+        body:
+          application/json:
+            type: uhub-common-error-datatype.error-response-types
+            example: !include examples/500.json
+  put:
+    is: [transaction-id, correlation-id, client-id]
+    description: used to update covid cases
+    securedBy: [oauth20]
+    body:
+      application/json:
+        type: uhub-covid-datatypes.update-covid-case-request-type
+        example: !include examples/upate-covid-case-example.json
+    responses:
+      200:
+        body:
+          application/json:
+            type: uhub-covid-datatypes.update-covid-case-response-type
+            example: !include examples/200.json
+      400:
+        body:
+          application/json:
+            type: uhub-common-error-datatype.error-response-types
+            example: !include examples/400.json
+      503:
+        body:
+          application/json:
+            type: uhub-common-error-datatype.error-response-types
+            example: !include examples/503.json
+      500:
+        body:
+          application/json:
+            type: uhub-common-error-datatype.error-response-types
+            example: !include examples/500.json
+/{nationalID}:
+  get:
+    is: [transaction-id, correlation-id, client-id]
+    description: used to get covid case by national id
+    securedBy: [oauth20]
+    responses:
+      200:
+        body:
+          application/json:
+            type: uhub-covid-datatypes.get-covid-case-by-national-id-response-type
+            example: !include examples/get-covid-case-by-national-id.json
+      503:
+        body:
+          application/json:
+            type: uhub-common-error-datatype.error-response-types
+            example: !include examples/503.json
+      500:
+        body:
+          application/json:
+            type: uhub-common-error-datatype.error-response-types
+            example: !include examples/500.json
+/reports: 
+  get:
+    description: To get reports by state wise and if state not provided all states reports responded
+    securedBy: [oauth20]
+    is: [transaction-id, correlation-id, client-id, state-query-param]
+    responses:
+      200:
+        body:
+          application/json:
+            type: uhub-covid-datatypes.get-reports-response-type
+            example: !include examples/get-all-cases.json    
+      503:
+          body:
+            application/json:
+              type: uhub-common-error-datatype.error-response-types
+              example: !include examples/503.json
+      500:
+          body:
+            application/json:
+              type: uhub-common-error-datatype.error-response-types
+              example: !include examples/500.json
+/health-check:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            properties:
+              status:
+                type: string
+                example: "uhub-sapi Application is Running"
