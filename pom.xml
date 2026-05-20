@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.mycompany</groupId>
@@ -8,7 +10,7 @@
 	<packaging>mule-application</packaging>
 
 	<name>uhub-covid-sapi</name>
-<profiles>
+	<profiles>
 		<profile>
 			<id>dev</id>
 			<properties>
@@ -37,6 +39,20 @@
 				<version>${mule.maven.plugin.version}</version>
 				<extensions>true</extensions>
 				<configuration>
+					<cloudhub2Deployment>
+						<uri>https://mulesoft.com</uri>
+						<provider>MC</provider>
+						<environment>develop</environment>
+						<target>Cloudhub-US-East-1</target>
+						<muleVersion>${app.runtime}</muleVersion>
+						<username>${username}</username>
+						<password>${password}</password>
+						<applicationName>uhub-covid-sapi-dev</applicationName>
+						<vCores>0.1</vCores>
+						<properties>
+							<env>${env}</env>
+						</properties>
+					</cloudhub2Deployment>
 					<sharedLibraries>
 						<sharedLibrary>
 							<groupId>com.mycompany</groupId>
@@ -88,14 +104,15 @@
 			<artifactId>ojdbc11</artifactId>
 			<version>0.1</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/Project Libraries/ojdbc11.jar</systemPath>
+			<systemPath>${project.basedir}/Project Libraries/ojdbc11-0.1.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>com.mycompany</groupId>
 			<artifactId>ojdbc17</artifactId>
 			<version>0.1</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/Project Libraries/ojdbc17.jar</systemPath>
+			<systemPath>${project.basedir}/Project Libraries/ojdbc17-0.1.jar</systemPath>
+
 		</dependency>
 	</dependencies>
 
@@ -113,6 +130,7 @@
 			<layout>default</layout>
 		</repository>
 	</repositories>
+
 	<pluginRepositories>
 		<pluginRepository>
 			<id>mulesoft-releases</id>
