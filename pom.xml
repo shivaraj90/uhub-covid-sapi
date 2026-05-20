@@ -55,6 +55,11 @@
 						<environment>dev</environment>
 						<target>Cloudhub-US-East-1</target>
 						<muleVersion>${app.runtime}</muleVersion>
+						<connectedApp>
+							<clientId>${client.id}</clientId>
+							<clientSecret>${client.secret}</clientSecret>
+							<grantType>client_credentials</grantType>
+						</connectedApp>
 						<username>${username}</username>
 						<password>${password}</password>
 						<applicationName>uhub-covid-sapi-dev</applicationName>
