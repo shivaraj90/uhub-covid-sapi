@@ -38,6 +38,15 @@
 				<artifactId>mule-maven-plugin</artifactId>
 				<version>${mule.maven.plugin.version}</version>
 				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<id>default-package</id>
+						<phase>package</phase>
+						<goals>
+							<goal>package</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
 					<cloudhub2Deployment>
 						<uri>https://mulesoft.com</uri>
